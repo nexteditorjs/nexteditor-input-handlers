@@ -1,0 +1,21 @@
+
+div.editor-root div.editor-content div[data-type=editor-container] div[data-type=editor-block] [data-type=block-content][data-title-placeholder]::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  content: attr(data-title-placeholder);
+  color: #ccc;
+}
+
+
+div.editor-root div.editor-content div[data-type=editor-container] div[data-type=editor-block] [data-type=block-content][data-content-placeholder]::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  content: attr(data-content-placeholder);
+  color: #ccc;
+}

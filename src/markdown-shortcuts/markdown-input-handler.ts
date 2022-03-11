@@ -8,11 +8,11 @@ class MarkdownInputHandler implements NextEditorInputHandler {
     console.debug('handle after insert text');
     if (text === ' ') {
       //
-      if (matchBlockStyle(editor, containerId, blockIndex, offset - 1)) {
+      if (matchBlockStyle(editor, containerId, blockIndex, offset)) {
         return true;
       }
       //
-      if (matchTextStyle(editor, containerId, blockIndex, offset - 1)) {
+      if (matchTextStyle(editor, containerId, blockIndex, offset)) {
         return true;
       }
     }

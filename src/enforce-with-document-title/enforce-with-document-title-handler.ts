@@ -1,7 +1,7 @@
 import {
   assert, BlockElement, createTextBlockData, editorGetBlockData, editorRunInUndoGroup,
   getBlockContent, getChildBlockCount, getContainerId, getNextBlock, getTextLength, isMatchShortcut,
-  NextEditor, NextEditorInputHandler
+  NextEditor, NextEditorInputHandler, RemoteChangeType
 } from "@nexteditorjs/nexteditor-core";
 
 import './placeholder.css';
@@ -78,6 +78,12 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
     }
   }
 
+  handleRemoteChanged(editor: NextEditor): void {
+    setTimeout(() => {
+      this.applyPlaceholder(editor);
+    });
+  }
+
   handleUpdateCompositionText(editor: NextEditor): void {
     this.applyPlaceholder(editor);
   }
@@ -115,7 +121,10 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
     }
     // content block
     const contentBlock = getNextBlock(titleBlock);
-    assert(contentBlock, 'no content block');
+    if (!contentBlock) {
+      console.log('no content block');
+      return;
+    }
     const contentElem = getBlockContent(contentBlock);
     if (isEmptyTextBlock(contentBlock)) {
       contentElem.setAttribute('data-content-placeholder', 'Enter some text...');

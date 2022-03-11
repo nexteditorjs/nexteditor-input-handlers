@@ -1,7 +1,8 @@
 import {
   assert, BlockElement, createTextBlockData, editorGetBlockData, editorRunInUndoGroup,
-  getBlockContent, getChildBlockCount, getContainerId, getNextBlock, getTextLength, isMatchShortcut,
-  NextEditor, NextEditorInputHandler, RemoteChangeType
+  getBlockByIndex,
+  getBlockContent, getBlockTextLength, getChildBlockCount, getContainerId, getNextBlock, getTextLength, isMatchShortcut,
+  NextEditor, NextEditorInputHandler
 } from "@nexteditorjs/nexteditor-core";
 
 import './placeholder.css';
@@ -37,23 +38,31 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
       return false;
     }
     //
-    const block = editor.getFirstBlock();
-    if (offset === 0) {
+    let deleteSecondBlock = false;
+    let secondBlock: BlockElement | null = null;
+    //
+    if (getChildBlockCount(editor.rootContainer) === 2) {
+      secondBlock = getBlockByIndex(editor.rootContainer, 1);
+      if (getBlockTextLength(editor, secondBlock) === 0) {
+        deleteSecondBlock = true;
+      }
       //
-      editorRunInUndoGroup(editor, () => {
-        const text = editor.getBlockText(block);
-        const length = getTextLength(text);
-        if (length > 0) {
-          editor.deleteTextFromBlock(block, 0, length);
-        }
-        const newBlock = editor.insertTextBlock(text, containerId, 1);
-        editor.selection.selectBlock(newBlock, 0);
-      })
-      //
-      return true;
     }
     //
-    return false;
+    //
+    const block = editor.getFirstBlock();
+    editorRunInUndoGroup(editor, () => {
+      const newBlock = editor.breakTextBlock(block, offset, {
+        forceInsertAfter: true,
+      });
+      editor.selection.selectBlock(newBlock, 0);
+      //
+      if (deleteSecondBlock && secondBlock) {
+        editor.deleteBlock(secondBlock);
+      }
+    });
+    //
+    return true;
   }
 
   handleChanged(editor: NextEditor): void {

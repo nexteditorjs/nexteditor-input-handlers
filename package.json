@@ -1,6 +1,6 @@
 {
   "name": "@nexteditorjs/nexteditor-input-handlers",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "files": [
     "dist"
   ],
@@ -13,7 +13,7 @@
     "dist": "vite build && tsc --emitDeclarationOnly --project tsconfig.dist.json"
   },
   "dependencies": {
-    "@nexteditorjs/nexteditor-core": "0.0.20",
+    "@nexteditorjs/nexteditor-core": "0.0.21",
     "blueimp-md5": "^2.19.0"
   },
   "devDependencies": {

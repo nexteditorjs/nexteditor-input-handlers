@@ -120,7 +120,7 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
     const titleBlock = editor.getFirstBlock();
     const titleContent = getBlockContent(titleBlock);
     if (isEmptyTextBlock(titleBlock)) {
-      titleContent.setAttribute('data-title-placeholder', 'Enter document title');
+      titleContent.setAttribute('data-title-placeholder', this.options?.titlePlaceholder ?? 'Enter document title');
     } else {
       titleContent.removeAttribute('data-title-placeholder');
     }
@@ -136,7 +136,7 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
     }
     const contentElem = getBlockContent(contentBlock);
     if (isEmptyTextBlock(contentBlock)) {
-      contentElem.setAttribute('data-content-placeholder', 'Enter some text...');
+      contentElem.setAttribute('data-content-placeholder', this.options?.contentPlaceholder ?? 'Enter some text...');
    } else {
     contentElem.removeAttribute('data-content-placeholder');
    }

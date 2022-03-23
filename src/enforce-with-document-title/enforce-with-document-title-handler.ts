@@ -30,7 +30,13 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
     return true;
   }
 
-  handleBeforeKeyDown(editor: NextEditor, containerId: string, blockIndex: number, offset: number, event: KeyboardEvent): boolean {
+  handleBeforeKeyDown(editor: NextEditor, event: KeyboardEvent): boolean {
+    const range = editor.selection.range;
+    if (!range.isSimple()) {
+      return false;
+    }
+    //
+    const { containerId, blockIndex, offset } = editor.getTextPosition();
     if (!EnforceWithDocumentTitleHandler.isDocumentTitleBlock(containerId, blockIndex)) {
       return false;
     }

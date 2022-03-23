@@ -5,7 +5,6 @@ import { matchTextStyle } from './match-text-style';
 
 class MarkdownInputHandler implements NextEditorInputHandler {
   handleAfterInsertText(editor: NextEditor, containerId: string, blockIndex: number, offset: number, text: string): boolean {
-    console.debug('handle after insert text');
     if (text === ' ') {
       //
       if (matchBlockStyle(editor, containerId, blockIndex, offset)) {
@@ -19,8 +18,13 @@ class MarkdownInputHandler implements NextEditorInputHandler {
     return false;
   }
 
-  handleBeforeKeyDown(editor: NextEditor, containerId: string, blockIndex: number, offset: number, event: KeyboardEvent): boolean {
-    console.debug('handle keydown');
+  handleBeforeKeyDown(editor: NextEditor, event: KeyboardEvent): boolean {
+    const range = editor.selection.range;
+    if (!range.isSimple()) {
+      return false;
+    }
+    //
+    const { containerId, blockIndex, offset } = editor.getTextPosition();
     //
     if (isMatchShortcut(event, 'Enter') && isTextKindBlock(editor, editor.getBlockByIndex(containerId, blockIndex))) {
       //

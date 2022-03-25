@@ -16,7 +16,7 @@ const editor = createEditor(app, new LocalDoc(createEmptyDoc('Document title\nDo
 
 editor.input.addHandler(new MarkdownInputHandler());
 editor.input.addHandler(new EnforceWithDocumentTitleHandler(editor, {
-  headingLevel: 2,
+  headingLevel: 1,
   titlePlaceholder: 'Document title',
   contentPlaceholder: 'Enter some text...',
 }));

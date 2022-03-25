@@ -1,7 +1,8 @@
 import {
-  assert, BlockElement, createTextBlockData, editorGetBlockData, editorRunInUndoGroup,
+  assert, BlockElement, createTextBlockData, editorGetBlockData,
   getBlockByIndex,
-  getBlockContent, getBlockTextLength, getChildBlockCount, getContainerId, getNextBlock, getTextLength, isMatchShortcut,
+  getBlockContent, getBlockTextLength, getChildBlockCount,
+  getContainerId, getNextBlock, getTextLength, isMatchShortcut,
   NextEditor, NextEditorInputHandler
 } from "@nexteditorjs/nexteditor-core";
 
@@ -57,11 +58,11 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
     //
     //
     const block = editor.getFirstBlock();
-    editorRunInUndoGroup(editor, () => {
-      const newBlock = editor.breakTextBlock(block, offset, {
+    editor.undoManager.runInGroup(() => {
+      //
+      editor.breakTextBlock(block, offset, {
         forceInsertAfter: true,
       });
-      editor.selection.selectBlock(newBlock, 0);
       //
       if (deleteSecondBlock && secondBlock) {
         editor.deleteBlock(secondBlock);

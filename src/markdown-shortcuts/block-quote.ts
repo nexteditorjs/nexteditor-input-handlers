@@ -1,4 +1,4 @@
-import { editorRunInUndoGroup, NextEditor } from "@nexteditorjs/nexteditor-core";
+import { createBlockSimpleRange, NextEditor } from "@nexteditorjs/nexteditor-core";
 
 export function matchBlockQuote(editor: NextEditor, containerId: string, blockIndex: number, offset: number): boolean {
   const block = editor.getBlockByIndex(containerId, blockIndex);
@@ -8,9 +8,9 @@ export function matchBlockQuote(editor: NextEditor, containerId: string, blockIn
     return false;
   }
 
-  editorRunInUndoGroup(editor, () => {
+  editor.undoManager.runInGroup(() => {
     editor.deleteTextFromBlock(block, 0, offset + 1);
-    editor.updateBlockData(block, { 'style-block-quote': true });
+    editor.updateBlockData(block, { 'style-block-quote': true }, createBlockSimpleRange(editor, block, 0));
   });
   //
   return true;

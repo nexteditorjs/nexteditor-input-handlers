@@ -1,5 +1,5 @@
 import {
-  createRichText, DocBlockText, DocBlockTextAttributes, editorRunInUndoGroup, getTextLength,
+  createRichText, DocBlockText, DocBlockTextAttributes, getTextLength,
   NextEditor, splitText, splitToThree, toPlainText,
 } from "@nexteditorjs/nexteditor-core";
 
@@ -84,7 +84,7 @@ export function matchTextStyle(editor: NextEditor, containerId: string, blockInd
     const insertedText = toPlainText(splitToThree(blockText, start + findLength, end - start - findLength * 2).middle);
     const styledText = createRichText(insertedText, textStyle);
     //
-    editorRunInUndoGroup(editor, () => {
+    editor.undoManager.runInGroup(() => {
       editor.deleteTextFromBlock(block, start, end - start);
       editor.insertTextToBlock(block, start, styledText);
     });

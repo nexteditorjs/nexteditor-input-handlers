@@ -1,4 +1,4 @@
-import { convertBlockFrom, editorRunInUndoGroup, NextEditor, toPlainText } from "@nexteditorjs/nexteditor-core";
+import { convertBlockFrom, createBlockSimpleRange, NextEditor, toPlainText } from "@nexteditorjs/nexteditor-core";
 
 const CONVERTER = {
   code: /^```\S+$/,
@@ -13,30 +13,19 @@ export function matchBlockConvert(editor: NextEditor, containerId: string, block
     //
     if (!text.match(reg)) continue;
     //
-    const result = editorRunInUndoGroup(editor, () => {
+    const result = editor.undoManager.runInGroup(() => {
       const convertResult = convertBlockFrom(editor, block, type);
       if (!convertResult) return null;
       //
       const { blockData: newBlockData, focusBlockId } = convertResult;
       if (!newBlockData) return null;
-      const newBlock = editor.insertBlock(containerId, blockIndex, newBlockData);
+      //
+      const newBlock = editor.insertBlock(containerId, blockIndex, newBlockData, createBlockSimpleRange(editor, focusBlockId ?? newBlockData.id, 0));
       editor.deleteBlock(block);
       return { newBlock, focusBlockId };
     });
     //
-    if (!result) {
-      return false;
-    }
-    //
-    const { newBlock, focusBlockId } = result;
-    //
-    if (focusBlockId) {
-      const focusedBlock = editor.getBlockById(focusBlockId);
-      editor.focusToBlock(focusedBlock, { tryFocusToChildSimpleBlock: true });
-    } else {
-      editor.focusToBlock(newBlock, { tryFocusToChildSimpleBlock: true });
-    }
-    return true;
+    return !!result;
   }
   return false;
 }

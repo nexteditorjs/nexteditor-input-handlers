@@ -1,4 +1,4 @@
-import { editorRunInUndoGroup, NextEditor } from "@nexteditorjs/nexteditor-core";
+import { createBlockSimpleRange, NextEditor } from "@nexteditorjs/nexteditor-core";
 
 const HEADINGS: { [index: string]: number } = {
   '#': 1,
@@ -18,9 +18,9 @@ export function matchHeading(editor: NextEditor, containerId: string, blockIndex
     return false;
   }
   //
-  editorRunInUndoGroup(editor, () => {
+  editor.undoManager.runInGroup(() => {
     editor.deleteTextFromBlock(block, 0, offset + 1);
-    editor.updateBlockData(block, { 'style-heading': heading });
+    editor.updateBlockData(block, { 'style-heading': heading }, createBlockSimpleRange(editor, block, 0));
   });
   //
   return true;

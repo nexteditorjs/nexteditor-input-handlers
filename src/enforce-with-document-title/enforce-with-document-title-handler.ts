@@ -88,7 +88,7 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
         return;
       }
       //
-      editor.insertTextBlock('', getContainerId(editor.rootContainer), 1, { newRange: editor.selection.range});
+      editor.insertTextBlock('', getContainerId(editor.rootContainer), 1, { newRange: editor.selection.range.toDocRange()});
     } finally {
       this.applyPlaceholder(editor);
     }

@@ -3,10 +3,13 @@ import {
   getBlockByIndex,
   getBlockContent, getBlockTextLength, getChildBlockCount,
   getContainerId, getNextBlock, getTextLength, isMatchShortcut,
-  NextEditor, NextEditorInputHandler
+  NextEditor, NextEditorInputHandler,
+  getLogger,
 } from "@nexteditorjs/nexteditor-core";
 
 import './placeholder.css';
+
+const console = getLogger('enforce-title');
 
 export interface EnforceWithDocumentTitleHandlerOptions {
   headingLevel?: number,

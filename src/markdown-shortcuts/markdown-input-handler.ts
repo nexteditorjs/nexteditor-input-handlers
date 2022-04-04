@@ -26,10 +26,16 @@ class MarkdownInputHandler implements NextEditorInputHandler {
     //
     const { containerId, blockIndex, offset } = editor.getTextPosition();
     //
-    if (isMatchShortcut(event, 'Enter') && isTextKindBlock(editor, editor.getBlockByIndex(containerId, blockIndex))) {
-      //
-      if (matchBlockConvert(editor, containerId, blockIndex, offset)) {
-        return true;
+    const isTextBlock = isTextKindBlock(editor, editor.getBlockByIndex(containerId, blockIndex));
+    if (isTextBlock) {
+      if (isMatchShortcut(event, 'Enter')) {
+        if (matchBlockConvert(editor, containerId, blockIndex, offset, 'enter')) {
+          return true;
+        }
+      } else if (isMatchShortcut(event, 'Space')) {
+        if (matchBlockConvert(editor, containerId, blockIndex, offset, 'space')) {
+          return true;
+        }
       }
     }
     //

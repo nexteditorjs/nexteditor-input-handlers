@@ -1,26 +1,67 @@
-import { convertBlockFrom, createBlockSimpleRange, NextEditor, splitText, toPlainText } from "@nexteditorjs/nexteditor-core";
+import { convertBlockFrom, createBlockSimpleRange, DocBlockAttributes, NextEditor, splitText, toPlainText } from "@nexteditorjs/nexteditor-core";
 
-const ENTER_CONVERTER = {
-  code: /^```\S+$/,
-  table: /^\|.+\|.+\|$/,
+type BlockConverters = {
+  [index: string]: {
+    reg: RegExp,
+    blockType: string;
+    data?: DocBlockAttributes,
+  }
+}
+
+const ENTER_CONVERTER: BlockConverters = {
+  code: {
+    blockType: 'code',
+    reg: /^```\S+$/,
+  },
+  table: {
+    blockType: 'code',
+    reg: /^\|.+\|.+\|$/,
+  },
 };
 
-const SPACE_CONVERTER = {
-  list: /^(\d)+\.$/,
+const SPACE_CONVERTER: BlockConverters = {
+  orderedList: {
+    reg: /^(\d)+\.$/,
+    blockType: 'list',
+    data: {
+      listType: 'ordered',
+    }
+  },
+  unorderedList1: {
+    reg: /^\*$/,
+    blockType: 'list',
+    data: {
+      listType: 'unordered',
+    }
+  },
+  unorderedList2: {
+    reg: /^-$/,
+    blockType: 'list',
+    data: {
+      listType: 'unordered',
+    }
+  },
+  checkList: {
+    reg: /^\[\]$/,
+    blockType: 'list',
+    data: {
+      listType: 'checkbox',
+    }
+  }
 };
 
 export function matchBlockConvert(editor: NextEditor, containerId: string, blockIndex: number, offset: number, type: 'enter' | 'space'): boolean {
   const block = editor.getBlockByIndex(containerId, blockIndex);
   const text = toPlainText(splitText(editor.getBlockText(block), offset).left).trim();
   //
-  const converter = type === 'enter' ? ENTER_CONVERTER : SPACE_CONVERTER;
+  const converters = type === 'enter' ? ENTER_CONVERTER : SPACE_CONVERTER;
   //
-  for (const [type, reg] of Object.entries(converter)) {
+  for (const [, converter] of Object.entries(converters)) {
     //
-    if (!text.match(reg)) continue;
+    if (!text.match(converter.reg)) continue;
     //
     const result = editor.undoManager.runInGroup(() => {
-      const convertResult = convertBlockFrom(editor, block, type, { offset });
+      const convertResult = convertBlockFrom(editor, block, converter.blockType, { offset, data: converter.data });
       if (!convertResult) return null;
       //
       const { blockData: newBlockData, focusBlockId } = convertResult;

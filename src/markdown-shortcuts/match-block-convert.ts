@@ -14,7 +14,7 @@ const ENTER_CONVERTER: BlockConverters = {
     reg: /^```\S+$/,
   },
   table: {
-    blockType: 'code',
+    blockType: 'table',
     reg: /^\|.+\|.+\|$/,
   },
 };

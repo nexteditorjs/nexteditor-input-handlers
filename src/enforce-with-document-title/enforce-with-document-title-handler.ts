@@ -9,7 +9,7 @@ import {
 
 import './placeholder.css';
 
-const console = getLogger('enforce-title');
+const logger = getLogger('enforce-title');
 
 export interface EnforceWithDocumentTitleHandlerOptions {
   headingLevel?: number,
@@ -78,7 +78,7 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
   handleChanged(editor: NextEditor): void {
     try {
       const blocks = editor.doc.getContainerBlocks(getContainerId(editor.rootContainer));
-      assert(blocks.length > 0, 'root container is empty');
+      assert(logger, blocks.length > 0, 'root container is empty');
       //
       const firstBlock = blocks[0];
       if (firstBlock.type !== 'text' || firstBlock['style-heading'] !== this.options.headingLevel) {
@@ -141,7 +141,7 @@ class EnforceWithDocumentTitleHandler implements NextEditorInputHandler {
     // content block
     const contentBlock = getNextBlock(titleBlock);
     if (!contentBlock) {
-      console.log('no content block');
+      logger.log('no content block');
       return;
     }
     const contentElem = getBlockContent(contentBlock);
